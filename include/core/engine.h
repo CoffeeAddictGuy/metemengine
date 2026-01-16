@@ -1,5 +1,5 @@
 #pragma once
-#include "C:\raylib\include\raylib.h"
+#include <raylib.h>
 
 typedef enum { START, STOP } EngineStatus;
 

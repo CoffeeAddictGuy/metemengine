@@ -1,8 +1,16 @@
+#include "../../include/core/collision_box2D.h"
 #include "../../include/core/engine.h"
 #include "../../include/core/entity.h"
+#include <raylib.h>
+#include <stdbool.h>
 
-Entity player = (Entity){(Vector2){0, 0}, (Vector2){0, 0}, 0.f, 50};
-Entity player2 = (Entity){(Vector2){0, 100}, (Vector2){0, 0}, 0.f, 50};
+Entity2D player = {0};
+Entity2D enemy = {0};
+
+void character_init() {
+  player = entity_create();
+  enemy = entity_create();
+}
 
 void on_update() {
   if (IsKeyDown(KEY_W)) {
@@ -25,23 +33,40 @@ void on_update() {
   } else if (IsKeyReleased(KEY_D)) {
     player.velocity.x = 0;
   }
-  player2.velocity.x = player.velocity.x;
-  player2.velocity.y = player.velocity.y;
   if (IsKeyPressed(KEY_ESCAPE)) {
     engine.status = STOP;
   }
+  if (IsKeyPressed(KEY_R)) {
+    player.collision_box.pos.x = 300;
+    player.collision_box.pos.y = -100;
+  }
+  if (IsKeyPressed(KEY_F1)) {
+    engine.debug_draw = !engine.debug_draw;
+  }
 
+  TraceLog(LOG_DEBUG, "Player %s pos  x = %f, y = %f ", player.name,
+           player.pos.x, player.pos.y);
+  TraceLog(LOG_DEBUG, "Collision %s pos  x = %f, y = %f ",
+           player.collision_box.name, player.collision_box.pos.x,
+           player.collision_box.pos.y);
+  if (aabb_collision(&player.collision_box, &enemy.collision_box)) {
+    player.is_colliding = true;
+    enemy.is_colliding = true;
+  } else {
+    player.is_colliding = false;
+    enemy.is_colliding = false;
+  }
   entity_movement(&player);
-  entity_movement(&player2);
 }
 
 void on_draw() {
-  DrawRectangleV(player.pos, (Vector2){50, 50}, RED);
-  DrawRectangleV(player2.pos, (Vector2){50, 50}, GREEN);
+  entity_draw(&player);
+  entity_draw(&enemy);
 }
 
 int main() {
   engine_init();
+  character_init();
   engine_run();
 
   return 0;

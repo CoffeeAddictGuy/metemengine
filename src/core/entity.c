@@ -11,26 +11,10 @@ Entity2D entity_create() {
   CollisionBox2D entity_collider = (CollisionBox2D){
       .name = "Default Collider", .pos = entity.pos, .size = entity.size};
   entity.collision_box = entity_collider;
-  return entity;
-}
+  TraceLog(LOG_DEBUG, "Created entity collision_box size: %f x %f",
+           entity.collision_box.size.x, entity.collision_box.size.y);
 
-void entity_draw(Entity2D *entity) {
-  DrawRectangleV(entity->pos, entity->size, RED);
-  if (engine.debug_draw) {
-    if (!entity->is_colliding) {
-      DrawRectangleLinesEx((Rectangle){entity->collision_box.pos.x,
-                                       entity->collision_box.pos.y,
-                                       entity->collision_box.size.x,
-                                       entity->collision_box.size.y},
-                           1, BLUE);
-    } else {
-      DrawRectangleLinesEx((Rectangle){entity->collision_box.pos.x,
-                                       entity->collision_box.pos.y,
-                                       entity->collision_box.size.x,
-                                       entity->collision_box.size.y},
-                           1, YELLOW);
-    }
-  }
+  return entity;
 }
 
 void entity_movement(Entity2D *entity) {

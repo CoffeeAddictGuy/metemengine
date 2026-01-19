@@ -3,6 +3,13 @@
 
 typedef enum { START, STOP } EngineStatus;
 
+
+typedef struct Scene Scene;
+typedef struct Entity2D Entity2D;
+typedef struct CollisionBox2D CollisionBox2D;
+typedef struct Scene Scene;
+typedef struct Renderer Renderer;
+
 typedef struct {
   float delta_time;
   EngineStatus status;
@@ -10,11 +17,7 @@ typedef struct {
 } Engine;
 
 extern Engine engine;
-
-typedef struct Scene Scene;
-typedef struct Entity2D Entity2D;
-typedef struct CollisionBox2D CollisionBox2D;
-
+extern Renderer renderer;
 void engine_init();
 void engine_run();
 void engine_update();

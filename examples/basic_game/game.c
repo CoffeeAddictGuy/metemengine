@@ -9,6 +9,7 @@
 Entity2D *player = {0};
 Entity2D *enemy = {0};
 Scene scene1 = {0};
+float player_speed = 200;
 
 void character_init() {
   player = scene_add_entity(&scene1);
@@ -19,22 +20,22 @@ void character_init() {
 
 void on_update() {
   if (IsKeyDown(KEY_W)) {
-    player->velocity.y = -1;
+    player->velocity.y = -1 * player_speed;
   } else if (IsKeyReleased(KEY_W)) {
     player->velocity.y = 0;
   }
   if (IsKeyDown(KEY_S)) {
-    player->velocity.y = 1;
+    player->velocity.y = 1 * player_speed;
   } else if (IsKeyReleased(KEY_S)) {
     player->velocity.y = 0;
   }
   if (IsKeyDown(KEY_A)) {
-    player->velocity.x = -1;
+    player->velocity.x = -1 * player_speed;
   } else if (IsKeyReleased(KEY_A)) {
     player->velocity.x = 0;
   }
   if (IsKeyDown(KEY_D)) {
-    player->velocity.x = 1;
+    player->velocity.x = 1 * player_speed;
   } else if (IsKeyReleased(KEY_D)) {
     player->velocity.x = 0;
   }

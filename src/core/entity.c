@@ -18,15 +18,14 @@ Entity2D entity_create() {
 }
 
 void entity_movement(Entity2D *entity) {
-  entity->speed = 200.0f;
-  if (entity->velocity.x != 0 && entity->velocity.y != 0) {
-    entity->speed *= 0.7f;
-  }
-  entity->pos.x += entity->velocity.x * entity->speed * engine.delta_time;
-  entity->pos.y += entity->velocity.y * entity->speed * engine.delta_time;
+  entity->pos.x += entity->velocity.x * engine.delta_time;
+  entity->collision_box.pos.x += entity->velocity.x * engine.delta_time;
 
-  entity->collision_box.pos.x +=
-      entity->velocity.x * entity->speed * engine.delta_time;
-  entity->collision_box.pos.y +=
-      entity->velocity.y * entity->speed * engine.delta_time;
+  entity->pos.y += entity->velocity.y * engine.delta_time;
+  entity->collision_box.pos.y += entity->velocity.y * engine.delta_time;
+
+  if (entity->velocity.x != 0 && entity->velocity.y != 0) {
+    entity->velocity.x *= 0.7f;
+    entity->velocity.y *= 0.7f;
+  }
 }

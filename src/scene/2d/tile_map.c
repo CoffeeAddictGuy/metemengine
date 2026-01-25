@@ -45,6 +45,20 @@ void tile_map_tlx_parse(TileMap *map, const char *const tileset_path) {
     }
   }
 
+  const cJSON *tile_width = NULL;
+  const cJSON *tile_height = NULL;
+  tile_width = cJSON_GetObjectItemCaseSensitive(tilemap_json, "tilewidth");
+  tile_height = cJSON_GetObjectItemCaseSensitive(tilemap_json, "tileheight");
+
+  if (!cJSON_IsNumber(tile_width) || tile_width == NULL ||
+      !cJSON_IsNumber(tile_height) || tile_height == NULL) {
+    printf("ERROR: tile width or tile height not found\n");
+  }
+  printf("Tile width %d and tile height %d\n", tile_width->valueint,
+         tile_height->valueint);
+  map->tile_width = tile_width->valueint;
+  map->tile_height = tile_height->valueint;
+
   const cJSON *layers = NULL;
   const cJSON *layer = NULL;
 
@@ -114,6 +128,7 @@ void tile_map_tlx_parse(TileMap *map, const char *const tileset_path) {
   }
 
   cJSON_Delete(tilemap_json);
+  free(buffer);
   return;
 }
 

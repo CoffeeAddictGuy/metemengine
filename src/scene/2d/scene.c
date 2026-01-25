@@ -1,7 +1,8 @@
-#include "../../include/core/scene.h"
+#include "scene.h"
 
 Scene scene_create() {
   Scene scene = {0};
+  scene.map = NULL;
   return scene;
 }
 

@@ -1,4 +1,5 @@
-#include "../../include/core/collision_box2D.h"
+#include "collision_box2D.h"
+#include "../scene.h"
 #include <raylib.h>
 
 void collision_draw_debug(CollisionBox2D *cb) {

@@ -1,8 +1,8 @@
-#include "../../include/core/engine.h"
-#include "../../include/core/collision_box2D.h"
-#include "../../include/core/entity.h"
-#include "../../include/core/renderer.h"
-#include "../../include/core/scene.h"
+#include "engine.h"
+#include "../core/renderer.h"
+#include "../scene/2d/entity.h"
+#include "../scene/2d/physics/collision_box2D.h"
+#include "../scene/2d/scene.h"
 #include <raylib.h>
 
 const int WIDTH = 800;

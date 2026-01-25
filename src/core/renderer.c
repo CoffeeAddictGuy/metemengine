@@ -1,5 +1,6 @@
-#include "../../include/core/renderer.h"
-#include "../../include/core/scene.h"
+#include "../../src/core/renderer.h"
+#include "../../src/scene/2d/scene.h"
+#include <raylib.h>
 
 Renderer renderer_create() {
   Renderer renderer = {0};
@@ -12,13 +13,14 @@ void renderer_set_scene(Renderer *renderer, Scene *scene) {
 
 void renderer_current_scene(Renderer *renderer) {
   Scene *curr = renderer->current_scene;
-  TraceLog(LOG_DEBUG, "Current scene pointer: %p", (void *)curr);
-  TraceLog(LOG_DEBUG, "Entity count: %d", curr->entity_count);
+  // TraceLog(LOG_DEBUG, "Current scene pointer: %p", (void *)curr);
+  // TraceLog(LOG_DEBUG, "Entity count: %d", curr->entity_count);
 
   // draw entities
   for (int i = 0; i < curr->entity_count; i++) {
-    TraceLog(LOG_DEBUG, "Entity %d size: %f x %f", i, curr->entities[i].size.x,
-             curr->entities[i].size.y);
+    // TraceLog(LOG_DEBUG, "Entity %d size: %f x %f", i,
+    // curr->entities[i].size.x,
+    //          curr->entities[i].size.y);
     DrawRectangleV(curr->entities[i].pos, curr->entities[i].size, RED);
     if (engine.debug_draw) {
       if (!curr->entities[i].is_colliding) {

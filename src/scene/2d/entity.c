@@ -1,4 +1,4 @@
-#include "../../include/core/entity.h"
+#include "entity.h"
 #include <raylib.h>
 
 Entity2D entity_create() {
@@ -11,8 +11,8 @@ Entity2D entity_create() {
   CollisionBox2D entity_collider = (CollisionBox2D){
       .name = "Default Collider", .pos = entity.pos, .size = entity.size};
   entity.collision_box = entity_collider;
-  TraceLog(LOG_DEBUG, "Created entity collision_box size: %f x %f",
-           entity.collision_box.size.x, entity.collision_box.size.y);
+  // TraceLog(LOG_DEBUG, "Created entity collision_box size: %f x %f",
+  //          entity.collision_box.size.x, entity.collision_box.size.y);
 
   return entity;
 }

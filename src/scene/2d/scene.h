@@ -1,7 +1,6 @@
-#pragma once
-#include "engine.h"
-#include "collision_box2D.h"
-#include "entity.h"
+#include "physics/collision_box2D.h"
+#include "../2d/entity.h"
+#include "tile_map.h"
 
 
 #define MAX 1000

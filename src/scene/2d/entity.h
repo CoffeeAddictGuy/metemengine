@@ -2,8 +2,8 @@
 #include <raylib.h>
 #include <stdlib.h>
 
-#include "engine.h"
-#include "collision_box2D.h"
+#include "../../core/engine.h"
+#include "physics/collision_box2D.h"
 
 
 typedef struct Entity2D {

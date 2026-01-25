@@ -40,4 +40,7 @@ void renderer_current_scene(Renderer *renderer) {
       }
     }
   }
+  if (curr->map != NULL) {
+    DrawTexture(curr->map->tileset, 0, 0, WHITE);
+  }
 }

@@ -10,7 +10,7 @@ typedef struct Scene {
   CollisionBox2D collision_boxes[MAX];
   int entity_count;
   int collision_count;
-
+  TileMap *map;
   void (*scene_on_draw) (void);
   void (*scene_on_update) (void);
 } Scene;

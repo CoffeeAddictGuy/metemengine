@@ -1,5 +1,6 @@
 #pragma once
 #include <raylib.h>
+#include <stdlib.h>
 
 typedef enum { START, STOP } EngineStatus;
 

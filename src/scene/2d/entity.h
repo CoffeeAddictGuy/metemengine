@@ -1,6 +1,6 @@
 #pragma once
 #include "../../core/engine.h"
-#include "physics/collision_box2D.h"
+#include "physics/collision_box2d.h"
 
 
 typedef struct Entity2D {

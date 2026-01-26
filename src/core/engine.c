@@ -1,7 +1,7 @@
 #include "engine.h"
 #include "../core/renderer.h"
 #include "../scene/2d/entity.h"
-#include "../scene/2d/physics/collision_box2D.h"
+#include "../scene/2d/physics/collision_box2d.h"
 #include "../scene/2d/scene.h"
 #include <raylib.h>
 

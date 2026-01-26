@@ -1,8 +1,8 @@
-#include "physics/collision_box2D.h"
+#include "physics/collision_box2d.h"
 #include "../2d/entity.h"
 #include "tile_map.h"
 #include "camera2d.h"
-
+#include <stdlib.h>
 
 #define ENTITY_MAX 1000
 #define CAMERA_MAX 10

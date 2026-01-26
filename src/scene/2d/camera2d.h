@@ -3,9 +3,8 @@
 
 
 typedef struct MCamera2D {
-	char *name;
+	char name[32];
 	Camera2D camera;
-	Entity2D *target;
 } MCamera2D;
 
 MCamera2D camera_create();

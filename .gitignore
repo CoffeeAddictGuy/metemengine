@@ -1,4 +1,15 @@
+
+#Windows
 *.exe
-build/
 .cache
+.vs/
+CppProperties.json
+
+#Build folder
+build/
+
+#Linux
 *.out
+
+#misc
+CMakeSettings.json

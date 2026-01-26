@@ -14,3 +14,19 @@ Entity2D *scene_add_entity(Scene *scene) {
   scene->collision_count++;
   return &scene->entities[scene->entity_count - 1];
 }
+
+MCamera2D* scene_add_camera(Scene* scene) {
+	MCamera2D camera = camera_create();
+	scene->cameras[scene->camera_count] = camera;
+	scene->camera_count++;
+	if (scene->main_camera == NULL) {
+		set_main_camera(scene, &camera);
+	}
+
+	return &scene->cameras[scene->camera_count - 1];
+}
+
+void set_main_camera(Scene* scene, MCamera2D *camera) {
+	scene->main_camera = camera;
+}
+

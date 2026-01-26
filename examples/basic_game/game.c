@@ -4,24 +4,23 @@
 #include "../../src/scene/2d/physics/collision_box2D.h"
 #include "../../src/scene/2d/scene.h"
 #include "../../src/scene/2d/tile_map.h"
-#include <raylib.h>
 #include <string.h>
 
 Entity2D *player = {0};
- Entity2D *enemy = {0};
+Entity2D *enemy = {0};
 Scene scene1 = {0};
 float player_speed = 200;
 TileMap *map = {0};
 
 void character_init() {
-  player = scene_add_entity(&scene1);
-   enemy = scene_add_entity(&scene1);
-   enemy->pos = (Vector2){100, 300};
-   enemy->collision_box.pos = enemy->pos;
-  map =
-      tile_map_create("resources/test.json",
+    player = scene_add_entity(&scene1);
+    enemy = scene_add_entity(&scene1);
+    enemy->pos = (Vector2){100, 300};
+    enemy->collision_box.pos = enemy->pos;
+    map =
+        tile_map_create("resources/test.json",
                       "resources/testset.png");
-  scene1.map = map;
+    scene1.map = map;
   strcpy(player->name, "Player");
    strcpy(enemy->name, "Enemy");
 }
@@ -64,7 +63,6 @@ void on_update() {
             player->collision_box.name, player->collision_box.pos.x,
             player->collision_box.pos.y);
    if (aabb_collision(&player->collision_box, &enemy->collision_box)) {
-     // TraceLog(LOG_DEBUG, "COLLIDING!");
      player->is_colliding = true;
      enemy->is_colliding = true;
    } else {

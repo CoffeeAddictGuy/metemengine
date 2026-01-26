@@ -1,7 +1,4 @@
 #pragma once
-#include <raylib.h>
-#include <stdlib.h>
-
 #include "../../core/engine.h"
 #include "physics/collision_box2D.h"
 

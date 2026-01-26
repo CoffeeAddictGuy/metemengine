@@ -1,6 +1,6 @@
 add_library(metemengine STATIC 
 			core/engine.c core/renderer.c 
-			scene/2d/scene.c scene/2d/entity.c scene/2d/tile_map.c 
+			scene/2d/scene.c scene/2d/entity.c scene/2d/tile_map.c scene/2d/camera2d.c
 			scene/2d/physics/collision_box2d.c
 )
 

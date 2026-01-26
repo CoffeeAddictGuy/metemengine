@@ -1,9 +1,10 @@
 #include "../../src/core/engine.h"
 #include "../../src/core/renderer.h"
 #include "../../src/scene/2d/entity.h"
-#include "../../src/scene/2d/physics/collision_box2D.h"
+#include "../../src/scene/2d/physics/collision_box2d.h"
 #include "../../src/scene/2d/scene.h"
 #include "../../src/scene/2d/tile_map.h"
+#include <raylib.h>
 #include <string.h>
 
 Entity2D *player = {0};
@@ -11,18 +12,20 @@ Entity2D *enemy = {0};
 Scene scene1 = {0};
 float player_speed = 200;
 TileMap *map = {0};
+MCamera2D *camera = {0};
 
 void character_init() {
-    player = scene_add_entity(&scene1);
-    enemy = scene_add_entity(&scene1);
-    enemy->pos = (Vector2){100, 300};
-    enemy->collision_box.pos = enemy->pos;
-    map =
-        tile_map_create("resources/test.json",
-                      "resources/testset.png");
-    scene1.map = map;
+  player = scene_add_entity(&scene1);
+  enemy = scene_add_entity(&scene1);
+  camera = scene_add_camera(&scene1);
+
+  enemy->pos = (Vector2){100, 300};
+  enemy->collision_box.pos = enemy->pos;
+  map = tile_map_create("../resources/test.json", "../resources/testset.png");
+  scene1.map = map;
   strcpy(player->name, "Player");
-   strcpy(enemy->name, "Enemy");
+  strcpy(enemy->name, "Enemy");
+  camera->camera.target = player->pos;
 }
 
 void on_update() {
@@ -57,18 +60,20 @@ void on_update() {
     engine.debug_draw = !engine.debug_draw;
   }
 
-   TraceLog(LOG_DEBUG, "Entity %s pos  x = %f, y = %f ", player->name,
-            player->pos.x, player->pos.y);
-   TraceLog(LOG_DEBUG, "Collision %s pos  x = %f, y = %f ",
-            player->collision_box.name, player->collision_box.pos.x,
-            player->collision_box.pos.y);
-   if (aabb_collision(&player->collision_box, &enemy->collision_box)) {
-     player->is_colliding = true;
-     enemy->is_colliding = true;
-   } else {
-     player->is_colliding = false;
-     enemy->is_colliding = false;
-   }
+  // TraceLog(LOG_DEBUG, "Entity %s pos  x = %f, y = %f ", player->name,
+  //          player->pos.x, player->pos.y);
+  // TraceLog(LOG_DEBUG, "Collision %s pos  x = %f, y = %f ",
+  //          player->collision_box.name, player->collision_box.pos.x,
+  //          player->collision_box.pos.y);
+  if (aabb_collision(&player->collision_box, &enemy->collision_box)) {
+    player->is_colliding = true;
+    enemy->is_colliding = true;
+  } else {
+    player->is_colliding = false;
+    enemy->is_colliding = false;
+  }
+  camera->camera.target = (Vector2){player->pos.x, player->pos.y};
+  camera->camera.offset = (Vector2){(float)800 / 2, (float)450 / 2};
   entity_movement(player);
 }
 

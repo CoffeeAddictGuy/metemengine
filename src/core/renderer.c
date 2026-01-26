@@ -1,7 +1,6 @@
 #include "../../src/core/renderer.h"
 #include "../../src/scene/2d/scene.h"
 #include "engine.h"
-#include <math.h>
 #include <raylib.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -18,6 +17,9 @@ void renderer_set_scene(Renderer *renderer, Scene *scene) {
 void renderer_current_scene(Renderer *renderer) {
   Scene *curr = renderer->current_scene;
 
+  if (curr->main_camera != NULL) {
+    BeginMode2D(curr->main_camera->camera);
+  }
   TileMap *curr_map = curr->map;
   int width = curr_map->layers[0].width;
   int height = curr_map->layers[0].height;
@@ -69,6 +71,10 @@ void renderer_current_scene(Renderer *renderer) {
             1, YELLOW);
       }
     }
+  }
+
+  if (curr->main_camera != NULL) {
+    EndMode2D();
   }
   int fps = GetFPS();
   DrawText(TextFormat("%d", fps), 0, 0, 15, BLACK);

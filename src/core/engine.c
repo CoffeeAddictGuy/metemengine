@@ -14,8 +14,10 @@ Renderer renderer = {0};
 void engine_init() {
   engine.status = START;
   engine.debug_draw = false;
+  engine.window_size = (Vector2){WIDTH, HEIGHT};
   InitWindow(WIDTH, HEIGHT, "metemengine");
-  SetTargetFPS(60);
+  SetWindowState(FLAG_WINDOW_UNDECORATED);
+  SetTargetFPS(1000);
   SetTraceLogLevel(LOG_DEBUG);
 }
 

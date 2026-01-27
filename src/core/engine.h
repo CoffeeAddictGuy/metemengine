@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 typedef enum { START, STOP } EngineStatus;
-
+typedef enum {FULLSCREEN, WINDOWED} WindowMode;
 
 typedef struct Scene Scene;
 typedef struct Entity2D Entity2D;
@@ -15,6 +15,8 @@ typedef struct {
   float delta_time;
   EngineStatus status;
   bool debug_draw;
+  Vector2 window_size;
+  WindowMode w_mode;
 } Engine;
 
 extern Engine engine;

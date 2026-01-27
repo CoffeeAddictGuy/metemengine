@@ -2,6 +2,7 @@
 #include "../../src/scene/2d/scene.h"
 #include "engine.h"
 #include <raylib.h>
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 
@@ -17,9 +18,15 @@ void renderer_set_scene(Renderer *renderer, Scene *scene) {
 void renderer_current_scene(Renderer *renderer) {
   Scene *curr = renderer->current_scene;
 
+  bool has_camera = false;
+  MCamera2D *cmr;
+
   if (curr->main_camera != NULL) {
     BeginMode2D(curr->main_camera->camera);
+    has_camera = true;
+    cmr = curr->main_camera;
   }
+
   TileMap *curr_map = curr->map;
   int width = curr_map->layers[0].width;
   int height = curr_map->layers[0].height;
@@ -40,10 +47,21 @@ void renderer_current_scene(Renderer *renderer) {
                          tile_height};
         Rectangle dest = {x * tile_width, y * tile_height, tile_width,
                           tile_height};
-        if (dest.x + dest.width <= 800 && dest.x >= 0 ||
-            dest.x + dest.height >= -450 && dest.x <= 0) {
-          DrawTexturePro(curr_map->tileset, src, dest, (Vector2){0, 0}, 0,
-                         WHITE);
+        if (has_camera) {
+          Rectangle viewport = {
+              cmr->camera.target.x - engine.window_size.x * 0.5f,
+              cmr->camera.target.y - engine.window_size.y * 0.5f,
+              engine.window_size.x, engine.window_size.y};
+          if (CheckCollisionRecs(viewport, dest)) {
+            DrawTexturePro(curr_map->tileset, src, dest, (Vector2){0, 0}, 0,
+                           WHITE);
+          }
+        } else {
+          if (dest.x + dest.width <= 800 && dest.x >= 0 ||
+              dest.x + dest.height >= -450 && dest.x <= 0) {
+            DrawTexturePro(curr_map->tileset, src, dest, (Vector2){0, 0}, 0,
+                           WHITE);
+          }
         }
       }
     }
@@ -77,5 +95,5 @@ void renderer_current_scene(Renderer *renderer) {
     EndMode2D();
   }
   int fps = GetFPS();
-  DrawText(TextFormat("%d", fps), 0, 0, 15, BLACK);
+  DrawText(TextFormat("%d", fps), 0, 0, 15, WHITE);
 }

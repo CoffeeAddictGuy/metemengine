@@ -1,5 +1,6 @@
 #include "../../src/core/renderer.h"
 #include "../../src/scene/2d/scene.h"
+#include "../../src/ui/profiler.h"
 #include "engine.h"
 #include <raylib.h>
 #include <stdbool.h>
@@ -94,6 +95,8 @@ void renderer_current_scene(Renderer *renderer) {
   if (curr->main_camera != NULL) {
     EndMode2D();
   }
+
+  int result = profiler_init();
   int fps = GetFPS();
   DrawText(TextFormat("%d", fps), 0, 0, 15, WHITE);
 }

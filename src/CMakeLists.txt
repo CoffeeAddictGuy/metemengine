@@ -10,8 +10,12 @@ find_package(cJSON REQUIRED)
 target_link_libraries(metemengine PUBLIC raylib)
 target_link_libraries(metemengine PUBLIC cjson)
 
+target_compile_definitions(metemengine PRIVATE $<$<CONFIG:Debug>:DEBUG>)
+target_sources(metemengine PRIVATE ui/profiler.c)
+
 target_include_directories(metemengine PUBLIC 
 	${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR}/../includes
 )
 
 target_compile_options(metemengine PRIVATE 

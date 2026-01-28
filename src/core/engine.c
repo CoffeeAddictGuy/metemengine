@@ -6,6 +6,7 @@
 #include "../scene/2d/scene.h"
 #include "../ui/profiler.h"
 #include "../scene/2d/tile_map.h"
+#include "../ui/profiler.h"
 #include <raylib.h>
 #include <stdio.h>
 
@@ -22,6 +23,7 @@ void engine_init() {
   engine.window_size = (Vector2){WIDTH, HEIGHT};
   metrics = profiler_init();
   engine.gm = game_manager_init();
+  metrics = profiler_init();
   InitWindow(WIDTH, HEIGHT, "metemengine");
   SetWindowState(FLAG_WINDOW_UNDECORATED);
   SetTargetFPS(144);
@@ -37,7 +39,9 @@ void engine_run() {
 #endif
 
     scene_update(engine.gm->current_scene, engine.delta_time);
-
+#ifdef Debug
+    metric_update();
+#endif
     BeginDrawing();
     ClearBackground(BLACK);
     on_draw();

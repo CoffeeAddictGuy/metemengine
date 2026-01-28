@@ -4,6 +4,7 @@
 #include "../../src/scene/2d/physics/collision_box2d.h"
 #include "../../src/scene/2d/scene.h"
 #include "../../src/scene/2d/tile_map.h"
+
 #include <raylib.h>
 #include <string.h>
 
@@ -60,11 +61,6 @@ void on_update() {
     engine.debug_draw = !engine.debug_draw;
   }
 
-  // TraceLog(LOG_DEBUG, "Entity %s pos  x = %f, y = %f ", player->name,
-  //          player->pos.x, player->pos.y);
-  // TraceLog(LOG_DEBUG, "Collision %s pos  x = %f, y = %f ",
-  //          player->collision_box.name, player->collision_box.pos.x,
-  //          player->collision_box.pos.y);
   if (aabb_collision(&player->collision_box, &enemy->collision_box)) {
     player->is_colliding = true;
     enemy->is_colliding = true;

@@ -95,8 +95,9 @@ void renderer_current_scene(Renderer *renderer) {
   if (curr->main_camera != NULL) {
     EndMode2D();
   }
-
-  int result = profiler_init();
+#ifdef DEBUG
+  profiler_data_view(metrics);
+#endif
   int fps = GetFPS();
   DrawText(TextFormat("%d", fps), 0, 0, 15, WHITE);
 }

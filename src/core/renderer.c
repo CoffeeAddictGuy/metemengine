@@ -1,6 +1,7 @@
 #include "../../src/core/renderer.h"
 #include "../../src/scene/2d/scene.h"
 #include "../../src/ui/profiler.h"
+#include "../../src/ui/profiler.h"
 #include "engine.h"
 #include "game_manager.h"
 #include <raylib.h>

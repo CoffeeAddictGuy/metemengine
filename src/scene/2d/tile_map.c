@@ -123,7 +123,6 @@ void tile_map_tlx_parse(Scene *scene, TileMap *map,
 
   cJSON_Delete(tilemap_json);
   free(buffer);
-  // tile_map_free(map);
   return;
 }
 
@@ -161,7 +160,6 @@ void tile_map_tile_layer_parser(Scene *scene, TileLayer *t_layer,
   int i = 0;
   cJSON *item = NULL;
 
-  const char *data_print = cJSON_Print(data);
   t_layer->gids = malloc(sizeof(uint16_t) * (t_layer->width * t_layer->height));
   cJSON_ArrayForEach(item, data) {
     if (cJSON_IsNumber(item) && i < tile_count) {
@@ -226,4 +224,6 @@ void tile_map_free(TileMap *tilemap) {
     free(tilemap->layers[i].gids);
   }
   free(tilemap->layers);
+  UnloadTexture(tilemap->tileset);
+  free(tilemap);
 }

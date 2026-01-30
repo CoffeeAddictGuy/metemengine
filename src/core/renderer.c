@@ -20,11 +20,15 @@ void render_current_scene(Renderer *renderer) {
 
   bool has_camera = false;
   MCamera2D *cmr;
+  Rectangle viewport = (Rectangle){0, 0, 0, 0};
 
   if (curr->main_camera != NULL) {
     BeginMode2D(curr->main_camera->camera);
     has_camera = true;
     cmr = curr->main_camera;
+    viewport = (Rectangle){cmr->camera.target.x - engine.window_size.x * 0.5f,
+                           cmr->camera.target.y - engine.window_size.y * 0.5f,
+                           engine.window_size.x, engine.window_size.y};
   }
 
   if (curr->map) {
@@ -48,7 +52,7 @@ void render_current_scene(Renderer *renderer) {
   DrawText(TextFormat("%d", fps), 0, 0, 15, WHITE);
 }
 
-void render_tile_map(TileMap *map) {
+void render_tile_map(TileMap *map, Rectangle *viewport) {
   for (int i = 0; i < map->layer_count; i++) {
     for (int y = 0; y < map->map_height; y++) {
       for (int x = 0; x < map->map_width; x++) {
@@ -66,14 +70,16 @@ void render_tile_map(TileMap *map) {
                          map->tile_width, map->tile_height};
         Rectangle dest = {x * map->tile_width, y * map->tile_height,
                           map->tile_width, map->tile_height};
-
-        DrawTexturePro(map->tileset, src, dest, (Vector2){0, 0}, .0f, WHITE);
+        if (is_tile_in_viewport(viewport, &dest)) {
+          DrawTexturePro(map->tileset, src, dest, (Vector2){0, 0}, .0f, WHITE);
+        }
       }
     }
   }
 }
 
-void render_entities(TileMap *map, Entity2D *entities, int entities_count) {
+void render_entities(TileMap *map, Rectangle *viewport, Entity2D *entities,
+                     int entities_count) {
   Entity2D *render_order = malloc(sizeof(Entity2D) * entities_count);
   memcpy(render_order, entities, sizeof(Entity2D) * entities_count);
 
@@ -93,10 +99,26 @@ void render_entities(TileMap *map, Entity2D *entities, int entities_count) {
       Rectangle dest =
           (Rectangle){render_order[i].pos.x, render_order[i].pos.y,
                       render_order[i].size.x, render_order[i].size.y};
-      DrawTexturePro(map->tileset, src, dest, (Vector2){0, 0}, .0f, WHITE);
+      if (is_object_in_viewport(viewport, &dest)) {
+        DrawTexturePro(map->tileset, src, dest, (Vector2){0, 0}, .0f, WHITE);
+      }
     }
   }
   free(render_order);
+}
+
+bool is_tile_in_viewport(Rectangle *viewport, Rectangle *object) {
+  if (CheckCollisionRecs(*viewport, *object)) {
+    return true;
+  }
+  return false;
+}
+
+bool is_object_in_viewport(Rectangle *viewport, Rectangle *object) {
+  if (CheckCollisionRecs(*viewport, *object)) {
+    return true;
+  }
+  return false;
 }
 
 void render_characters(Character2D *characters, int characters_count) {

@@ -4,6 +4,7 @@
 #include "../scene/2d/physics/collision_box2d.h"
 #include "../scene/2d/scene.h"
 #include "../ui/profiler.h"
+#include "../scene/2d/tile_map.h"
 #include <raylib.h>
 #include <stdio.h>
 
@@ -59,4 +60,7 @@ void metric_update() {
   }
 }
 
-void engine_shutdown() { CloseWindow(); }
+void engine_shutdown() {
+  tile_map_free(renderer.current_scene->map);
+  CloseWindow();
+}

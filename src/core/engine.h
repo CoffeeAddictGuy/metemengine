@@ -21,6 +21,7 @@ typedef struct {
 
 extern Engine engine;
 extern Renderer renderer;
+
 void engine_init();
 void engine_run();
 void engine_update();

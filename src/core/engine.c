@@ -3,6 +3,7 @@
 #include "../scene/2d/entity.h"
 #include "../scene/2d/physics/collision_box2d.h"
 #include "../scene/2d/scene.h"
+#include "../scene/2d/tile_map.h"
 #include <raylib.h>
 
 const int WIDTH = 800;
@@ -33,6 +34,9 @@ void engine_run() {
   }
 }
 
-void on_draw() { renderer_current_scene(&renderer); }
+void on_draw() { render_current_scene(&renderer); }
 
-void engine_shutdown() { CloseWindow(); }
+void engine_shutdown() {
+  tile_map_free(renderer.current_scene->map);
+  CloseWindow();
+}

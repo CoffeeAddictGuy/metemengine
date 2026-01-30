@@ -1,6 +1,7 @@
 #pragma once
 #include "../../core/engine.h"
 #include "physics/collision_box2d.h"
+#include <raylib.h>
 
 
 typedef struct Entity2D {
@@ -8,7 +9,7 @@ typedef struct Entity2D {
   Vector2 pos;
   Vector2 size;
   Vector2 velocity;
-  float speed;
+  Vector2 atlas_cord;
   CollisionBox2D collision_box;
   bool is_colliding;
 
@@ -18,4 +19,5 @@ typedef struct Entity2D {
 
 
 Entity2D entity_create();
+Entity2D entity_create_Pro(Vector2 size, Vector2 pos, Vector2 atlas_cord);
 void entity_movement(Entity2D *entity);

@@ -22,8 +22,8 @@ void character_init() {
 
   enemy->pos = (Vector2){100, 300};
   enemy->collision_box.pos = enemy->pos;
-  map = tile_map_create("../resources/test.json", "../resources/testset.png");
-  scene1.map = map;
+  scene_add_tilemap(&scene1, "../resources/test3.json",
+                    "../resources/testset.png");
   strcpy(player->name, "Player");
   strcpy(enemy->name, "Enemy");
   camera->camera.target = player->pos;

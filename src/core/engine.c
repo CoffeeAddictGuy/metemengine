@@ -39,7 +39,7 @@ void engine_run() {
   }
 }
 
-void on_draw() { renderer_current_scene(&renderer); }
+void on_draw() { render_current_scene(&renderer); }
 
 void window_fullscreen() {
   if (engine.w_mode == FULLSCREEN) {

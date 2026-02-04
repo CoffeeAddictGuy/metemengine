@@ -11,13 +11,68 @@ Scene scene_create() {
   return scene;
 }
 
-Entity2D *scene_add_entity(Scene *scene) {
-  Entity2D entity = entity_create();
-  scene->entities[scene->entity_count] = entity;
-  // scene->collision_boxes[scene->collision_count] = entity.collision_box;
-  scene->entity_count++;
-  // scene->collision_count++;
-  return &scene->entities[scene->entity_count - 1];
+void scene_init(Scene *scene) {
+  if (scene == NULL) {
+    return;
+  }
+  if (scene->on_init) {
+    scene->on_init(scene);
+  }
+
+  for (int i = 0; i < scene->entity_count; i++) {
+    if (scene->entities[i].on_init) {
+      scene->entities[i].on_init(scene->entities[i].self);
+    }
+  }
+
+  for (int i = 0; i < scene->character_count; i++) {
+    if (scene->characters[i].on_init) {
+      TraceLog(LOG_DEBUG, "Name %s", scene->characters[i].name);
+      scene->characters[i].on_init(&scene->characters[i]);
+    }
+  }
+}
+
+void scene_update(Scene *scene, float dt) {
+  if (scene == NULL) {
+    return;
+  }
+
+  for (int i = 0; i < scene->entity_count; i++) {
+    if (scene->entities[i].on_update) {
+      scene->entities[i].on_update(scene->entities[i].self, dt);
+    }
+  }
+
+  for (int i = 0; i < scene->character_count; i++) {
+    if (scene->characters[i].on_update) {
+      TraceLog(LOG_DEBUG, "Name - %s", scene->characters[i].name);
+      scene->characters[i].on_update(&scene->characters[i], dt);
+    }
+  }
+}
+
+void scene_destroy(Scene *scene) {
+  if (scene == NULL) {
+    return;
+  }
+
+  for (int i = 0; i < scene->entity_count; i++) {
+    if (scene->entities[i].on_destroy) {
+      scene->entities[i].on_destroy(scene->entities[i].self);
+    }
+  }
+  if (scene->on_destroy) {
+    scene->on_destroy(scene);
+  }
+}
+
+void scene_add_entity(Scene *scene, Entity2D entity) {
+  scene->entities[scene->entity_count++] = entity;
+}
+
+void scene_add_character(Scene *scene, Character2D character) {
+  scene->characters[scene->character_count++] = character;
 }
 
 Entity2D *scene_add_entityPro(Scene *scene, Vector2 size, Vector2 pos,

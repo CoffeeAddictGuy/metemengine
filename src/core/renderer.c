@@ -2,6 +2,7 @@
 #include "../../src/scene/2d/scene.h"
 #include "../../src/ui/profiler.h"
 #include "engine.h"
+#include "game_manager.h"
 #include <raylib.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -10,15 +11,12 @@
 
 Renderer renderer_create() {
   Renderer renderer = {0};
+  renderer.current_scene = engine.gm->current_scene;
   return renderer;
 }
 
-void renderer_set_scene(Renderer *renderer, Scene *scene) {
-  renderer->current_scene = scene;
-}
-
 void render_current_scene(Renderer *renderer) {
-  Scene *curr = renderer->current_scene;
+  Scene *curr = engine.gm->current_scene;
 
   bool has_camera = false;
   MCamera2D *cmr;
@@ -29,8 +27,16 @@ void render_current_scene(Renderer *renderer) {
     cmr = curr->main_camera;
   }
 
-  render_tile_map(curr->map);
-  render_entities(curr->map, curr->entities, curr->entity_count);
+  if (curr->map) {
+    render_tile_map(curr->map);
+  }
+  if (curr->entity_count > 0) {
+    render_entities(curr->map, curr->entities, curr->entity_count);
+  }
+
+  if (curr->character_count > 0) {
+    render_characters(curr->characters, curr->character_count);
+  }
 
   if (curr->main_camera != NULL) {
     EndMode2D();
@@ -76,6 +82,9 @@ void render_entities(TileMap *map, Entity2D *entities, int entities_count) {
   for (int i = 0; i < entities_count; i++) {
     if (strcmp(render_order[i].name, "Player") == 0 ||
         strcmp(render_order[i].name, "Enemy") == 0) {
+      TraceLog(LOG_DEBUG, "Player found out!");
+      TraceLog(LOG_DEBUG, "Player pos - %f.x/%f.y", render_order[i].pos.x,
+               render_order[i].pos.y);
       DrawRectangleV(render_order[i].pos, render_order[i].size, RED);
     } else {
       Rectangle src = (Rectangle){
@@ -88,6 +97,12 @@ void render_entities(TileMap *map, Entity2D *entities, int entities_count) {
     }
   }
   free(render_order);
+}
+
+void render_characters(Character2D *characters, int characters_count) {
+  for (int i = 0; i < characters_count; i++) {
+    DrawRectangleV(characters[i].pos, characters[i].size, RED);
+  }
 }
 
 int comp(const void *a, const void *b) {

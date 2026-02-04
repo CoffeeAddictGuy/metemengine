@@ -1,4 +1,5 @@
 #include "engine.h"
+#include "../core/game_manager.h"
 #include "../core/renderer.h"
 #include "../scene/2d/entity.h"
 #include "../scene/2d/physics/collision_box2d.h"
@@ -20,9 +21,10 @@ void engine_init() {
   engine.debug_draw = false;
   engine.window_size = (Vector2){WIDTH, HEIGHT};
   metrics = profiler_init();
+  engine.gm = game_manager_init();
   InitWindow(WIDTH, HEIGHT, "metemengine");
   SetWindowState(FLAG_WINDOW_UNDECORATED);
-  SetTargetFPS(1000);
+  SetTargetFPS(144);
   SetTraceLogLevel(LOG_DEBUG);
 }
 
@@ -33,6 +35,9 @@ void engine_run() {
 #ifdef Debug
     metric_update();
 #endif
+
+    scene_update(engine.gm->current_scene, engine.delta_time);
+
     BeginDrawing();
     ClearBackground(BLACK);
     on_draw();
@@ -62,5 +67,6 @@ void metric_update() {
 
 void engine_shutdown() {
   tile_map_free(renderer.current_scene->map);
+  game_manager_free(engine.gm->current_scene);
   CloseWindow();
 }

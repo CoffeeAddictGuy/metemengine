@@ -8,7 +8,7 @@ void player_init(void *self) {
   p->pos.y = 0;
   p->size.x = 50;
   p->size.y = 50;
-  p->speed = 100.f;
+  p->speed = 200.f;
   strcpy(p->name, "Player");
 }
 
@@ -42,10 +42,11 @@ void player_update(void *self, float dt) {
     engine.debug_draw = !engine.debug_draw;
   }
 
-  TraceLog(LOG_DEBUG, "Player name - %s", player->name);
-  TraceLog(LOG_DEBUG, "Player pos - %f.x/%f.y", player->pos.x, player->pos.y);
-  TraceLog(LOG_DEBUG, "Player size - %f.x/%f.y", player->size.x,
-           player->size.y);
+  // TraceLog(LOG_DEBUG, "Player name - %s", player->name);
+  // TraceLog(LOG_DEBUG, "Player pos - %f.x/%f.y", player->pos.x,
+  // player->pos.y); TraceLog(LOG_DEBUG, "Player size - %f.x/%f.y",
+  // player->size.x,
+  //          player->size.y);
 
   entity_movement(player);
 }

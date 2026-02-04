@@ -36,6 +36,7 @@ Scene scene_create();
 void scene_add_entity(Scene *scene, Entity2D entity);
 void scene_add_character(Scene *scene, Character2D character);
 Entity2D *scene_add_entityPro(Scene *scene, Vector2 size, Vector2 pos, Vector2 atlas_cord);
-MCamera2D *scene_add_camera(Scene *scene);
+void scene_add_camera(Scene *scene, MCamera2D camera, int mode, void *target);
+// MCamera2D *scene_add_camera(Scene *scene);
 void scene_add_tilemap(Scene *scene, const char *json_path, const char *tileset_path);
 void set_main_camera(Scene *scene, MCamera2D *camera);

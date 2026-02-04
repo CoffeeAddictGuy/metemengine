@@ -1,4 +1,5 @@
 #include "scene.h"
+#include "camera2d.h"
 #include "entity.h"
 #include "tile_map.h"
 #include <raylib.h>
@@ -27,8 +28,13 @@ void scene_init(Scene *scene) {
 
   for (int i = 0; i < scene->character_count; i++) {
     if (scene->characters[i].on_init) {
-      TraceLog(LOG_DEBUG, "Name %s", scene->characters[i].name);
       scene->characters[i].on_init(&scene->characters[i]);
+    }
+  }
+
+  for (int i = 0; i < scene->camera_count; i++) {
+    if (scene->cameras[i].on_init) {
+      scene->cameras[i].on_init(&scene->cameras[i]);
     }
   }
 }
@@ -46,8 +52,13 @@ void scene_update(Scene *scene, float dt) {
 
   for (int i = 0; i < scene->character_count; i++) {
     if (scene->characters[i].on_update) {
-      TraceLog(LOG_DEBUG, "Name - %s", scene->characters[i].name);
       scene->characters[i].on_update(&scene->characters[i], dt);
+    }
+  }
+
+  for (int i = 0; i < scene->camera_count; i++) {
+    if (scene->cameras[i].on_update) {
+      scene->cameras[i].on_update(&scene->cameras[i], dt);
     }
   }
 }
@@ -83,17 +94,33 @@ Entity2D *scene_add_entityPro(Scene *scene, Vector2 size, Vector2 pos,
   return &scene->entities[scene->entity_count - 1];
 }
 
-MCamera2D *scene_add_camera(Scene *scene) {
-  MCamera2D camera = camera_create();
-  printf("Camera name %s!\n", camera.name);
-  scene->cameras[scene->camera_count] = camera;
-  scene->camera_count++;
+void scene_add_camera(Scene *scene, MCamera2D camera, int mode, void *target) {
+  if (target == NULL) {
+    return;
+  }
+
+  if (mode == 1) {
+    camera.target = target;
+  }
+  scene->cameras[scene->camera_count++] = camera;
+  TraceLog(LOG_DEBUG, "Camera name %s", camera.name);
   if (scene->main_camera == NULL) {
     set_main_camera(scene, &scene->cameras[scene->camera_count - 1]);
   }
-  printf("Camera name %s!\n", scene->main_camera->name);
-  return &scene->cameras[scene->camera_count - 1];
+  TraceLog(LOG_DEBUG, "Main camera name - %s", scene->main_camera->name);
 }
+
+// MCamera2D *scene_add_camera(Scene *scene) {
+//   MCamera2D camera = camera_create();
+//   printf("Camera name %s!\n", camera.name);
+//   scene->cameras[scene->camera_count] = camera;
+//   scene->camera_count++;
+//   if (scene->main_camera == NULL) {
+//     set_main_camera(scene, &scene->cameras[scene->camera_count - 1]);
+//   }
+//   printf("Camera name %s!\n", scene->main_camera->name);
+//   return &scene->cameras[scene->camera_count - 1];
+// }
 
 void scene_add_tilemap(Scene *scene, const char *json_path,
                        const char *tileset_path) {

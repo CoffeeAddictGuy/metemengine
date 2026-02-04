@@ -10,6 +10,7 @@ typedef struct Entity2D Entity2D;
 typedef struct CollisionBox2D CollisionBox2D;
 typedef struct Scene Scene;
 typedef struct Renderer Renderer;
+typedef struct GameManager GameManager;
 
 typedef struct {
   float delta_time;
@@ -17,6 +18,7 @@ typedef struct {
   bool debug_draw;
   Vector2 window_size;
   WindowMode w_mode;
+  GameManager *gm;
 } Engine;
 
 extern Engine engine;

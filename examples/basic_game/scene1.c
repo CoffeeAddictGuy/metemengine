@@ -2,6 +2,7 @@
 #include "../../src/scene/2d/camera2d.h"
 #include "../../src/scene/2d/entity.h"
 #include "../../src/scene/2d/scene.h"
+#include "camera.h"
 #include "player.h"
 #include <raylib.h>
 #include <stdlib.h>
@@ -9,14 +10,18 @@
 static void scene1_init(Scene *scene) {
   scene->entity_count = 0;
   scene->character_count = 0;
-
+  scene->camera_count = 0;
   Character2D player =
       character2d_create(player_init, player_update, player_destroy);
   player_init(&player);
 
   scene_add_character(scene, player);
 
-  MCamera2D *cmr = scene_add_camera(scene);
+  MCamera2D camera = camera_create(camera_init, camera_update, camera_destroy);
+  camera_init(&camera);
+
+  scene_add_camera(scene, camera, 1, &scene->characters[0]);
+
   scene_add_tilemap(scene, "../resources/test3.json",
                     "../resources/testset.png");
 }

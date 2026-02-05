@@ -1,6 +1,7 @@
 #include "../../src/core/renderer.h"
 #include "../../src/scene/2d/scene.h"
 #include "engine.h"
+#include "game_manager.h"
 #include <raylib.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -9,15 +10,12 @@
 
 Renderer renderer_create() {
   Renderer renderer = {0};
+  renderer.current_scene = engine.gm->current_scene;
   return renderer;
 }
 
-void renderer_set_scene(Renderer *renderer, Scene *scene) {
-  renderer->current_scene = scene;
-}
-
 void render_current_scene(Renderer *renderer) {
-  Scene *curr = renderer->current_scene;
+  Scene *curr = engine.gm->current_scene;
 
   bool has_camera = false;
   MCamera2D *cmr;
@@ -32,8 +30,16 @@ void render_current_scene(Renderer *renderer) {
                            engine.window_size.x, engine.window_size.y};
   }
 
-  render_tile_map(curr->map, &viewport);
-  render_entities(curr->map, &viewport, curr->entities, curr->entity_count);
+  if (curr->map) {
+    render_tile_map(curr->map);
+  }
+  if (curr->entity_count > 0) {
+    render_entities(curr->map, curr->entities, curr->entity_count);
+  }
+
+  if (curr->character_count > 0) {
+    render_characters(curr->characters, curr->character_count);
+  }
 
   if (curr->main_camera != NULL) {
     EndMode2D();
@@ -108,6 +114,12 @@ bool is_object_in_viewport(Rectangle *viewport, Rectangle *object) {
     return true;
   }
   return false;
+}
+
+void render_characters(Character2D *characters, int characters_count) {
+  for (int i = 0; i < characters_count; i++) {
+    DrawRectangleV(characters[i].pos, characters[i].size, RED);
+  }
 }
 
 int comp(const void *a, const void *b) {

@@ -19,11 +19,15 @@ void render_current_scene(Renderer *renderer) {
 
   bool has_camera = false;
   MCamera2D *cmr;
+  Rectangle viewport = (Rectangle){0, 0, 0, 0};
 
   if (curr->main_camera != NULL) {
     BeginMode2D(curr->main_camera->camera);
     has_camera = true;
     cmr = curr->main_camera;
+    viewport = (Rectangle){cmr->camera.target.x - engine.window_size.x * 0.5f,
+                           cmr->camera.target.y - engine.window_size.y * 0.5f,
+                           engine.window_size.x, engine.window_size.y};
   }
 
   if (curr->map) {
@@ -45,7 +49,7 @@ void render_current_scene(Renderer *renderer) {
   DrawText(TextFormat("%d", fps), 0, 0, 15, WHITE);
 }
 
-void render_tile_map(TileMap *map) {
+void render_tile_map(TileMap *map, Rectangle *viewport) {
   for (int i = 0; i < map->layer_count; i++) {
     for (int y = 0; y < map->map_height; y++) {
       for (int x = 0; x < map->map_width; x++) {
@@ -63,37 +67,53 @@ void render_tile_map(TileMap *map) {
                          map->tile_width, map->tile_height};
         Rectangle dest = {x * map->tile_width, y * map->tile_height,
                           map->tile_width, map->tile_height};
+        if (is_tile_in_viewport(viewport, &dest)) {
+          DrawTexturePro(map->tileset, src, dest, (Vector2){0, 0}, .0f, WHITE);
+        }
+      }
+    }
+  }
+}
 
+void render_entities(TileMap *map, Rectangle *viewport, Entity2D *entities,
+                     int entities_count) {
+  Entity2D *render_order[entities_count];
+  for (int i = 0; i < entities_count; i++) {
+    render_order[i] = &entities[i];
+  }
+
+  qsort(render_order, entities_count, sizeof(Entity2D *), comp);
+
+  for (int i = 0; i < entities_count; i++) {
+    if (strcmp(render_order[i]->name, "Player") == 0 ||
+        strcmp(render_order[i]->name, "Enemy") == 0) {
+      DrawRectangleV(render_order[i]->pos, render_order[i]->size, RED);
+    } else {
+      Rectangle src = (Rectangle){
+          render_order[i]->atlas_cord.x, render_order[i]->atlas_cord.y,
+          render_order[i]->size.x, render_order[i]->size.y};
+      Rectangle dest =
+          (Rectangle){render_order[i]->pos.x, render_order[i]->pos.y,
+                      render_order[i]->size.x, render_order[i]->size.y};
+      if (is_object_in_viewport(viewport, &dest)) {
         DrawTexturePro(map->tileset, src, dest, (Vector2){0, 0}, .0f, WHITE);
       }
     }
   }
 }
 
-void render_entities(TileMap *map, Entity2D *entities, int entities_count) {
-  Entity2D *render_order = malloc(sizeof(Entity2D) * entities_count);
-  memcpy(render_order, entities, sizeof(Entity2D) * entities_count);
-
-  qsort(render_order, entities_count, sizeof(Entity2D), comp);
-
-  for (int i = 0; i < entities_count; i++) {
-    if (strcmp(render_order[i].name, "Player") == 0 ||
-        strcmp(render_order[i].name, "Enemy") == 0) {
-      TraceLog(LOG_DEBUG, "Player found out!");
-      TraceLog(LOG_DEBUG, "Player pos - %f.x/%f.y", render_order[i].pos.x,
-               render_order[i].pos.y);
-      DrawRectangleV(render_order[i].pos, render_order[i].size, RED);
-    } else {
-      Rectangle src = (Rectangle){
-          render_order[i].atlas_cord.x, render_order[i].atlas_cord.y,
-          render_order[i].size.x, render_order[i].size.y};
-      Rectangle dest =
-          (Rectangle){render_order[i].pos.x, render_order[i].pos.y,
-                      render_order[i].size.x, render_order[i].size.y};
-      DrawTexturePro(map->tileset, src, dest, (Vector2){0, 0}, .0f, WHITE);
-    }
+bool is_tile_in_viewport(Rectangle *viewport, Rectangle *object) {
+  if (CheckCollisionRecs(*viewport, *object)) {
+    return true;
   }
-  free(render_order);
+  return false;
+}
+
+bool is_object_in_viewport(Rectangle *viewport, Rectangle *object) {
+  if (CheckCollisionRecs(*viewport, *object)) {
+    return true;
+  }
+  return false;
 }
 
 void render_characters(Character2D *characters, int characters_count) {
@@ -103,8 +123,11 @@ void render_characters(Character2D *characters, int characters_count) {
 }
 
 int comp(const void *a, const void *b) {
-  float a_y = ((Entity2D *)a)->pos.y + ((Entity2D *)a)->size.y;
-  float b_y = ((Entity2D *)b)->pos.y + ((Entity2D *)b)->size.y;
+  const Entity2D *ea = *(Entity2D **)a;
+  const Entity2D *eb = *(Entity2D **)b;
+
+  float a_y = ea->pos.y + ea->size.y;
+  float b_y = eb->pos.y + eb->size.y;
 
   if (a_y < b_y) {
     return -1;

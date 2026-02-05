@@ -15,3 +15,4 @@ void render_tile_map(TileMap *map);
 void render_entities(TileMap *map, Entity2D *entities, int entities_count);
 void render_characters(Character2D *characters, int characters_count);
 int comp(const void *a, const void *b);
+

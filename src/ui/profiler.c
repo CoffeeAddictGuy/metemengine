@@ -1,5 +1,6 @@
 #include "profiler.h"
 #include "../../src/core/engine.h"
+#include <raylib.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -44,6 +45,8 @@ void profiler_update_data(Profiler *profiler) {
 
 void profiler_data_view(Profiler *profiler) {
   GuiPanel((Rectangle){engine.window_size.x - 300, 0, 300, 200}, "Debug info");
+  GuiLabel((Rectangle){engine.window_size.x - 300, 0, 300, 200}, TextFormat("FPS: %d", GetFPS()));
+  GuiLabel((Rectangle){engine.window_size.x - 300, 10, 300, 200}, TextFormat("Delta time: %f", engine.delta_time));
   if (GuiCheckBox((Rectangle){engine.window_size.x - 280, 50, 10, 10},
                   "Fullscreen?", &engine.fullscreen)) {
     window_fullscreen();

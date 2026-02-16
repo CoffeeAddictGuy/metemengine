@@ -9,8 +9,5 @@ void camera_update(void *self, float dt) {
 
   c->camera.target.x += (target_pos.x - c->camera.target.x) * 8.0f * dt;
   c->camera.target.y += (target_pos.y - c->camera.target.y) * 8.0f * dt;
-
-  TraceLog(LOG_DEBUG, "Target cord - %f.x/%f.y", c->camera.target.x,
-           c->camera.target.y);
 }
 void camera_destroy(void *self) { TraceLog(LOG_DEBUG, "Camera destroy!"); }

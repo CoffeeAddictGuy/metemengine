@@ -1,6 +1,5 @@
 #include "scene1.h"
 #include "../../src/scene/2d/camera2d.h"
-#include "../../src/scene/2d/entity.h"
 #include "../../src/scene/2d/scene.h"
 #include "camera.h"
 #include "player.h"
@@ -9,10 +8,12 @@
 
 static void scene1_init(Scene *scene) {
   scene->static_count = 0;
+  scene->static_count = 0;
   scene->character_count = 0;
   scene->camera_count = 0;
   Character2D player =
       character2d_create(NULL, player_init, player_update, player_destroy);
+  player.base.self = &player;
   player_init(&player);
 
   scene_add_character(scene, player);

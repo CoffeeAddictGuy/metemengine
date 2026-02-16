@@ -17,3 +17,8 @@ Vector2 get_target_pos(void *target) {
   Character2D *c = target;
   return c->base.pos;
 }
+
+void camera_update_offset(MCamera2D *camera) {
+  camera->camera.offset =
+      (Vector2){engine.window_size.x / 2, engine.window_size.y / 2};
+}

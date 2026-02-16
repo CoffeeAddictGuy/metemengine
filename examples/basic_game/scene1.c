@@ -8,11 +8,11 @@
 #include <stdlib.h>
 
 static void scene1_init(Scene *scene) {
-  scene->entity_count = 0;
+  scene->static_count = 0;
   scene->character_count = 0;
   scene->camera_count = 0;
   Character2D player =
-      character2d_create(player_init, player_update, player_destroy);
+      character2d_create(NULL, player_init, player_update, player_destroy);
   player_init(&player);
 
   scene_add_character(scene, player);

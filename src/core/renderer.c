@@ -5,7 +5,6 @@
 #include <raylib.h>
 #include <stdbool.h>
 #include <stdint.h>
-#include <stdlib.h>
 #include <string.h>
 
 Renderer renderer_create() {
@@ -33,12 +32,8 @@ void render_current_scene(Renderer *renderer) {
   if (curr->map) {
     render_tile_map(curr->map);
   }
-  if (curr->entity_count > 0) {
-    render_entities(curr->map, curr->entities, curr->entity_count);
-  }
-
-  if (curr->character_count > 0) {
-    render_characters(curr->characters, curr->character_count);
+  if (curr->static_count > 0) {
+    render_entities(curr->map, curr);
   }
 
   if (curr->main_camera != NULL) {
@@ -49,7 +44,21 @@ void render_current_scene(Renderer *renderer) {
   DrawText(TextFormat("%d", fps), 0, 0, 15, WHITE);
 }
 
-void render_tile_map(TileMap *map, Rectangle *viewport) {
+bool is_tile_in_viewport(Rectangle *viewport, Rectangle *object) {
+  if (CheckCollisionRecs(*viewport, *object)) {
+    return true;
+  }
+  return false;
+}
+
+bool is_object_in_viewport(Rectangle *viewport, Rectangle *object) {
+  if (CheckCollisionRecs(*viewport, *object)) {
+    return true;
+  }
+  return false;
+}
+
+void render_tile_map(TileMap *map) {
   for (int i = 0; i < map->layer_count; i++) {
     for (int y = 0; y < map->map_height; y++) {
       for (int x = 0; x < map->map_width; x++) {
@@ -67,67 +76,71 @@ void render_tile_map(TileMap *map, Rectangle *viewport) {
                          map->tile_width, map->tile_height};
         Rectangle dest = {x * map->tile_width, y * map->tile_height,
                           map->tile_width, map->tile_height};
-        if (is_tile_in_viewport(viewport, &dest)) {
-          DrawTexturePro(map->tileset, src, dest, (Vector2){0, 0}, .0f, WHITE);
-        }
       }
     }
   }
 }
 
-void render_entities(TileMap *map, Rectangle *viewport, Entity2D *entities,
-                     int entities_count) {
-  Entity2D *render_order[entities_count];
-  for (int i = 0; i < entities_count; i++) {
-    render_order[i] = &entities[i];
+
+void render_entities(TileMap *map, Scene *scene) {
+
+  RendererItem render_list[ENTITY_MAX];
+  int render_item = 0;
+
+  for (int static_body = 0; static_body < scene->static_count; static_body++) {
+    render_list[render_item++] =
+        make_render_item_from_static(&scene->statics[static_body]);
   }
 
-  qsort(render_order, entities_count, sizeof(Entity2D *), comp);
+  for (int character = 0; character < scene->character_count; character++) {
+    render_list[render_item++] =
+        make_render_item_from_character(&scene->characters[character]);
+  }
 
-  for (int i = 0; i < entities_count; i++) {
-    if (strcmp(render_order[i]->name, "Player") == 0 ||
-        strcmp(render_order[i]->name, "Enemy") == 0) {
-      DrawRectangleV(render_order[i]->pos, render_order[i]->size, RED);
+  qsort(render_list, render_item, sizeof(RendererItem), comp);
+
+  for (int i = 0; i < render_item; i++) {
+    if (render_list[i].type == CHARACTER_BODY) {
+      DrawRectangleV(render_list[i].pos, render_list[i].size, RED);
     } else {
-      Rectangle src = (Rectangle){
-          render_order[i]->atlas_cord.x, render_order[i]->atlas_cord.y,
-          render_order[i]->size.x, render_order[i]->size.y};
+      Rectangle src = render_list[i].src;
       Rectangle dest =
-          (Rectangle){render_order[i]->pos.x, render_order[i]->pos.y,
-                      render_order[i]->size.x, render_order[i]->size.y};
-      if (is_object_in_viewport(viewport, &dest)) {
-        DrawTexturePro(map->tileset, src, dest, (Vector2){0, 0}, .0f, WHITE);
-      }
+          (Rectangle){render_list[i].pos.x, render_list[i].pos.y,
+                      render_list[i].size.x, render_list[i].size.y};
+      DrawTexturePro(map->tileset, src, dest, (Vector2){0, 0}, .0f, WHITE);
     }
   }
 }
 
-bool is_tile_in_viewport(Rectangle *viewport, Rectangle *object) {
-  if (CheckCollisionRecs(*viewport, *object)) {
-    return true;
-  }
-  return false;
+RendererItem make_render_item_from_static(StaticBody2D *static_body) {
+  Rectangle static_src =
+      (Rectangle){static_body->atlas_cord.x, static_body->atlas_cord.y,
+                  static_body->size.x, static_body->size.y};
+  RendererItem item =
+      (RendererItem){.pos = static_body->base.pos,
+                     .size = static_body->size,
+                     .src = static_src,
+                     .y_sort = static_body->base.pos.y + static_body->size.y,
+                     .type = STATIC_BODY};
+  return item;
 }
 
-bool is_object_in_viewport(Rectangle *viewport, Rectangle *object) {
-  if (CheckCollisionRecs(*viewport, *object)) {
-    return true;
-  }
-  return false;
-}
-
-void render_characters(Character2D *characters, int characters_count) {
-  for (int i = 0; i < characters_count; i++) {
-    DrawRectangleV(characters[i].pos, characters[i].size, RED);
-  }
+RendererItem make_render_item_from_character(Character2D *character) {
+  Rectangle static_src =
+      (Rectangle){character->atlas_cord.x, character->atlas_cord.y,
+                  character->size.x, character->size.y};
+  RendererItem item =
+      (RendererItem){.pos = character->base.pos,
+                     .size = character->size,
+                     .src = static_src,
+                     .y_sort = character->base.pos.y + character->size.y,
+                     .type = CHARACTER_BODY};
+  return item;
 }
 
 int comp(const void *a, const void *b) {
-  const Entity2D *ea = *(Entity2D **)a;
-  const Entity2D *eb = *(Entity2D **)b;
-
-  float a_y = ea->pos.y + ea->size.y;
-  float b_y = eb->pos.y + eb->size.y;
+  float a_y = ((RendererItem *)a)->pos.y + ((RendererItem*)a)->size.y;
+  float b_y = ((RendererItem *)b)->pos.y + ((RendererItem *)b)->size.y;
 
   if (a_y < b_y) {
     return -1;

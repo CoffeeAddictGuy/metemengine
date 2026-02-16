@@ -15,5 +15,5 @@ MCamera2D camera_create(OnInitFn on_init, OnUpdateFn on_update,
 
 Vector2 get_target_pos(void *target) {
   Character2D *c = target;
-  return c->pos;
+  return c->base.pos;
 }

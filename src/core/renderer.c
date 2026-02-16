@@ -76,11 +76,11 @@ void render_tile_map(TileMap *map) {
                          map->tile_width, map->tile_height};
         Rectangle dest = {x * map->tile_width, y * map->tile_height,
                           map->tile_width, map->tile_height};
+        DrawTexturePro(map->tileset, src, dest, (Vector2){0, 0}, .0f, WHITE);
       }
     }
   }
 }
-
 
 void render_entities(TileMap *map, Scene *scene) {
 
@@ -139,7 +139,7 @@ RendererItem make_render_item_from_character(Character2D *character) {
 }
 
 int comp(const void *a, const void *b) {
-  float a_y = ((RendererItem *)a)->pos.y + ((RendererItem*)a)->size.y;
+  float a_y = ((RendererItem *)a)->pos.y + ((RendererItem *)a)->size.y;
   float b_y = ((RendererItem *)b)->pos.y + ((RendererItem *)b)->size.y;
 
   if (a_y < b_y) {

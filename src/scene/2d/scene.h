@@ -11,10 +11,10 @@
 #define CAMERA_MAX 10
 
 typedef struct Scene {
-  Entity2D entities[ENTITY_MAX];
+  StaticBody2D statics[ENTITY_MAX];
   Character2D characters[CHARACTER_MAX];
   CollisionBox2D collision_boxes[ENTITY_MAX];
-  int entity_count;
+  int static_count;
   int character_count;
   int collision_count;
   TileMap *map;
@@ -34,9 +34,14 @@ void scene_destroy(Scene *scene);
 
 Scene scene_create();
 void scene_add_entity(Scene *scene, Entity2D entity);
+void scene_add_static(Scene *scene, StaticBody2D static_body);
 void scene_add_character(Scene *scene, Character2D character);
-Entity2D *scene_add_entityPro(Scene *scene, Vector2 size, Vector2 pos, Vector2 atlas_cord);
+
+Entity2D *scene_add_entity_pro(Scene *scene, Vector2 size, Vector2 pos, Vector2 atlas_cord);
+StaticBody2D *scene_add_static_pro(Scene *scene, Vector2 size, Vector2 pos, Vector2 atlas_cord);
+Character2D *scene_add_character_pro(Scene *scene, Vector2 size, Vector2 pos, Vector2 atlas_cord);
+
 void scene_add_camera(Scene *scene, MCamera2D camera, int mode, void *target);
-// MCamera2D *scene_add_camera(Scene *scene);
-void scene_add_tilemap(Scene *scene, const char *json_path, const char *tileset_path);
 void set_main_camera(Scene *scene, MCamera2D *camera);
+
+void scene_add_tilemap(Scene *scene, const char *json_path, const char *tileset_path);

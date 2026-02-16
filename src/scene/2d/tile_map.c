@@ -184,23 +184,23 @@ void tile_map_object_layer_parser(Scene *scene, TileLayer *t_layer,
       cJSON *y_pos = cJSON_GetObjectItemCaseSensitive(object, "y");
 
       if (!cJSON_IsNumber(gid) || gid == NULL) {
-        return;
+        continue;
       }
 
       if (!cJSON_IsNumber(height) || height == NULL) {
-        return;
+        continue;
       }
 
       if (!cJSON_IsNumber(width) || width == NULL) {
-        return;
+        continue;
       }
 
       if (!cJSON_IsNumber(x_pos) || x_pos == NULL) {
-        return;
+        continue;
       }
 
       if (!cJSON_IsNumber(y_pos) || y_pos == NULL) {
-        return;
+        continue;
       }
 
       int local_id = gid->valueint - 1041;
@@ -213,8 +213,7 @@ void tile_map_object_layer_parser(Scene *scene, TileLayer *t_layer,
           (Vector2){x_pos->valueint, y_pos->valueint - height->valueint};
       Vector2 atlas_pos =
           (Vector2){x_atlas * width->valueint, y_atlas * height->valueint};
-
-      scene_add_entityPro(scene, entity_size, entity_pos, atlas_pos);
+      scene_add_static_pro(scene, entity_size, entity_pos, atlas_pos);
     }
   }
 }

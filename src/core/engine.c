@@ -1,14 +1,11 @@
 #include "engine.h"
 #include "../core/game_manager.h"
 #include "../core/renderer.h"
-#include "../scene/2d/entity.h"
-#include "../scene/2d/physics/collision_box2d.h"
 #include "../scene/2d/scene.h"
 #include "../ui/profiler.h"
 #include "../scene/2d/tile_map.h"
 #include "../ui/profiler.h"
 #include <raylib.h>
-#include <stdio.h>
 
 const int WIDTH = 800;
 const int HEIGHT = 450;

@@ -3,7 +3,7 @@
 #include "entity.h"
 #include "tile_map.h"
 #include <raylib.h>
-#include <stdio.h>
+#include <string.h>
 
 Scene scene_create() {
   Scene scene = {0};
@@ -20,15 +20,15 @@ void scene_init(Scene *scene) {
     scene->on_init(scene);
   }
 
-  for (int i = 0; i < scene->entity_count; i++) {
-    if (scene->entities[i].on_init) {
-      scene->entities[i].on_init(scene->entities[i].self);
+  for (int i = 0; i < scene->static_count; i++) {
+    if (scene->statics[i].base.on_init) {
+      scene->statics[i].base.on_init(scene->statics[i].base.self);
     }
   }
 
   for (int i = 0; i < scene->character_count; i++) {
-    if (scene->characters[i].on_init) {
-      scene->characters[i].on_init(&scene->characters[i]);
+    if (scene->characters[i].base.on_init) {
+      scene->characters[i].base.on_init(&scene->characters[i]);
     }
   }
 
@@ -44,15 +44,15 @@ void scene_update(Scene *scene, float dt) {
     return;
   }
 
-  for (int i = 0; i < scene->entity_count; i++) {
-    if (scene->entities[i].on_update) {
-      scene->entities[i].on_update(scene->entities[i].self, dt);
+  for (int i = 0; i < scene->static_count; i++) {
+    if (scene->statics[i].base.on_update) {
+      scene->statics[i].base.on_update(scene->statics[i].base.self, dt);
     }
   }
 
   for (int i = 0; i < scene->character_count; i++) {
-    if (scene->characters[i].on_update) {
-      scene->characters[i].on_update(&scene->characters[i], dt);
+    if (scene->characters[i].base.on_update) {
+      scene->characters[i].base.on_update(&scene->characters[i], dt);
     }
   }
 
@@ -68,9 +68,9 @@ void scene_destroy(Scene *scene) {
     return;
   }
 
-  for (int i = 0; i < scene->entity_count; i++) {
-    if (scene->entities[i].on_destroy) {
-      scene->entities[i].on_destroy(scene->entities[i].self);
+  for (int i = 0; i < scene->static_count; i++) {
+    if (scene->statics[i].base.on_destroy) {
+      scene->statics[i].base.on_destroy(scene->statics[i].base.self);
     }
   }
   if (scene->on_destroy) {
@@ -78,20 +78,35 @@ void scene_destroy(Scene *scene) {
   }
 }
 
-void scene_add_entity(Scene *scene, Entity2D entity) {
-  scene->entities[scene->entity_count++] = entity;
+void scene_add_static(Scene *scene, StaticBody2D static_body) {
+  scene->statics[scene->static_count++] = static_body;
 }
 
 void scene_add_character(Scene *scene, Character2D character) {
   scene->characters[scene->character_count++] = character;
 }
 
-Entity2D *scene_add_entityPro(Scene *scene, Vector2 size, Vector2 pos,
-                              Vector2 atlas_cord) {
-  Entity2D entity = entity_create_Pro(size, pos, atlas_cord);
-  scene->entities[scene->entity_count] = entity;
-  scene->entity_count++;
-  return &scene->entities[scene->entity_count - 1];
+// Entity2D *scene_add_entity_pro(Scene *scene, Vector2 size, Vector2 pos,
+//                               Vector2 atlas_cord) {
+//   Entity2D entity = entity_create_Pro(size, pos, atlas_cord);
+//   scene->statics[scene->static_count++] = entity;
+//   return &scene->statics[scene->static_count - 1];
+// }
+
+StaticBody2D *scene_add_static_pro(Scene *scene, Vector2 size, Vector2 pos,
+                                   Vector2 atlas_cord) {
+  StaticBody2D static_body =
+      static_body_create_pro(NULL, NULL, NULL, NULL, size, pos, atlas_cord);
+  scene->statics[scene->static_count++] = static_body;
+  return &scene->statics[scene->static_count - 1];
+}
+
+Character2D *scene_add_character_pro(Scene *scene, Vector2 size, Vector2 pos,
+                                     Vector2 atlas_cord) {
+  Character2D character_body =
+      character2d_create_pro(NULL, NULL, NULL, NULL, size, pos, atlas_cord);
+  scene->characters[scene->character_count++] = character_body;
+  return &scene->characters[scene->character_count - 1];
 }
 
 void scene_add_camera(Scene *scene, MCamera2D camera, int mode, void *target) {
